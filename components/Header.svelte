@@ -34,6 +34,7 @@
 	$: activeLink = $page.url.pathname;
 </script>
 
+<div class="absolute inset-0 -top-14 z-20 h-14 w-screen bg-background"></div>
 <header
 	class="{clazz !== ''
 		? clazz + ' '
