@@ -22,6 +22,10 @@ theme.subscribe((value) => {
 	if (typeof window !== 'undefined' && value !== lastTheme) {
 		setCookie('theme', value, 365, 'ma.cyou');
 		document.documentElement.classList.toggle('dark', value === 'dark');
+
+		document
+			.querySelector('meta[name="theme-color"]')
+			?.setAttribute('content', value === 'dark' ? '#090a0b' : '#ffffff');
 		lastTheme = value;
 	}
 });
