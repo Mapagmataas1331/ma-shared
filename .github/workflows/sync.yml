@@ -18,56 +18,27 @@ jobs:
           git config --global user.name "mapagmataas1331"
           git config --global user.email "mapagmataas@outlook.com"
 
-      - name: Install GitHub CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gh
-
-      - name: Authenticate GitHub CLI
-        run: |
-          echo "${{ secrets.PAT }}" | gh auth login --with-token
-
       - name: Push changes to target repositories
-        env:
-          PAT: ${{ secrets.PAT }}
         run: |
-          repos=("mapagmataas1331/ma" "mapagmataas1331/ma-api" "mapagmataas1331/ngok-better-schedule" "ma-cyou/ma-test")
+          repos=("ma" "ma-api" "ngok-better-schedule")
+          PAT="${{ secrets.PAT }}"
 
           for repo in "${repos[@]}"
           do
-            # Clone the repository using GitHub CLI for improved permissions handling
-            gh repo clone $repo
-            cd $(basename $repo)
+            git clone https://${PAT}@github.com/mapagmataas1331/$repo.git
+            cd $repo
 
-            # Check if submodule exists, if not add it
             if ! git config --file .gitmodules --get-regexp "src/lib/shared" > /dev/null; then
               echo "Submodule not found. Adding it now."
               git submodule add https://github.com/mapagmataas1331/ma-shared.git src/lib/shared
             fi
 
-            # Update submodule
             git submodule update --init --remote src/lib/shared
             
-            # Check for changes
             if [[ -n $(git status --porcelain) ]]; then
-              # Create a new branch for the update
-              git checkout -b update-shared-components
               git add src/lib/shared
               git commit -m "Update shared components"
-
-              # Attempt to push the new branch
-              if ! git push origin main; then
-                echo "Direct push failed for $repo. Creating a pull request instead."
-
-                # Create pull request using GitHub CLI
-                gh pr create --repo $repo \
-                             --title "Sync shared components" \
-                             --body "Automated update of shared components." \
-                             --base main \
-                             --head update-shared-components
-              else
-                echo "Branch update-shared-components pushed successfully to $repo."
-              fi
+              git push origin main || echo "Failed to push to $repo"
             else
               echo "No changes to commit in $repo."
             fi
