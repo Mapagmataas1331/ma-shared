@@ -24,18 +24,21 @@ jobs:
           sudo apt-get install -y gh
 
       - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use GITHUB_TOKEN for better permissions within actions
         run: |
-          gh auth login --with-token <<< "${{ secrets.PAT }}"
+          gh auth login --with-token <<< "${GH_TOKEN}"
 
       - name: Push changes to target repositories
         env:
-          PAT: ${{ secrets.PAT }}
+          TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=("mapagmataas1331/ma" "mapagmataas1331/ma-api" "mapagmataas1331/ngok-better-schedule" "ma-cyou/ma-test")
 
           for repo in "${repos[@]}"
           do
-            git clone https://${PAT}@github.com/$repo.git
+            git clone https://${TOKEN}@github.com/$repo.git
             cd $(basename $repo)
 
             # Check if submodule exists, if not add it
@@ -53,15 +56,17 @@ jobs:
               git add src/lib/shared
               git commit -m "Update shared components"
 
-              # Try pushing directly to main
+              # Try pushing directly to main or new branch
               if ! git push origin update-shared-components; then
                 echo "Failed to push to $repo. Creating a pull request instead."
 
                 # Use GitHub CLI to create pull request
-                gh pr create --title "Sync shared components" \
-                             --body "Automated update of shared components." \
-                             --base main \
-                             --head update-shared-components
+                if ! gh pr create --title "Sync shared components" \
+                                  --body "Automated update of shared components." \
+                                  --base main \
+                                  --head update-shared-components; then
+                  echo "Pull request creation failed. Please check token permissions."
+                fi
               else
                 echo "Changes pushed directly to $repo."
               fi
