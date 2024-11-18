@@ -24,10 +24,8 @@ jobs:
           sudo apt-get install -y gh
 
       - name: Authenticate GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
         run: |
-          echo $GH_TOKEN | gh auth login --with-token
+          gh auth login --with-token <<< "${{ secrets.PAT }}"
 
       - name: Push changes to target repositories
         env:
