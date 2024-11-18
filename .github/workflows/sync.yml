@@ -18,27 +18,55 @@ jobs:
           git config --global user.name "mapagmataas1331"
           git config --global user.email "mapagmataas@outlook.com"
 
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          echo $GH_TOKEN | gh auth login --with-token
+
       - name: Push changes to target repositories
+        env:
+          PAT: ${{ secrets.PAT }}
         run: |
           repos=("mapagmataas1331/ma" "mapagmataas1331/ma-api" "mapagmataas1331/ngok-better-schedule" "ma-cyou/ma-test")
-          PAT="${{ secrets.PAT }}"
 
           for repo in "${repos[@]}"
           do
             git clone https://${PAT}@github.com/$repo.git
             cd $(basename $repo)
 
+            # Check if submodule exists, if not add it
             if ! git config --file .gitmodules --get-regexp "src/lib/shared" > /dev/null; then
               echo "Submodule not found. Adding it now."
               git submodule add https://github.com/mapagmataas1331/ma-shared.git src/lib/shared
             fi
 
+            # Update submodule
             git submodule update --init --remote src/lib/shared
             
+            # Check for changes
             if [[ -n $(git status --porcelain) ]]; then
+              git checkout -b update-shared-components
               git add src/lib/shared
               git commit -m "Update shared components"
-              git push origin main || echo "Failed to push to $repo"
+
+              # Try pushing directly to main
+              if ! git push origin update-shared-components; then
+                echo "Failed to push to $repo. Creating a pull request instead."
+
+                # Use GitHub CLI to create pull request
+                gh pr create --title "Sync shared components" \
+                             --body "Automated update of shared components." \
+                             --base main \
+                             --head update-shared-components
+              else
+                echo "Changes pushed directly to $repo."
+              fi
             else
               echo "No changes to commit in $repo."
             fi
