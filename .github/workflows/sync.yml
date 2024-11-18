@@ -20,7 +20,7 @@ jobs:
 
       - name: Push changes to target repositories
         run: |
-          repos=("mapagamtaas1331/ma" "mapagamtaas1331/ma-api" "mapagamtaas1331/ngok-better-schedule" "ma-cyou/ma")
+          repos=("mapagmataas1331/ma" "mapagmataas1331/ma-api" "mapagmataas1331/ngok-better-schedule" "ma-cyou/ma")
           PAT="${{ secrets.PAT }}"
 
           for repo in "${repos[@]}"
