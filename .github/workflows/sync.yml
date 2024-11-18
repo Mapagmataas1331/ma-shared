@@ -35,7 +35,8 @@ jobs:
 
           for repo in "${repos[@]}"
           do
-            git clone https://${PAT}@github.com/$repo.git
+            # Clone the repository using GitHub CLI for improved permissions handling
+            gh repo clone $repo
             cd $(basename $repo)
 
             # Check if submodule exists, if not add it
@@ -54,12 +55,9 @@ jobs:
               git add src/lib/shared
               git commit -m "Update shared components"
 
-              # Try pushing directly to main
-              if ! git push origin main; then
-                echo "Direct push to main failed for $repo. Pushing to update-shared-components branch and creating a PR."
-
-                # Push to update-shared-components branch
-                git push origin update-shared-components
+              # Attempt to push the new branch
+              if ! git push origin update-shared-components; then
+                echo "Direct push failed for $repo. Creating a pull request instead."
 
                 # Create pull request using GitHub CLI
                 gh pr create --repo $repo \
@@ -68,7 +66,7 @@ jobs:
                              --base main \
                              --head update-shared-components
               else
-                echo "Changes pushed directly to main in $repo."
+                echo "Branch update-shared-components pushed successfully to $repo."
               fi
             else
               echo "No changes to commit in $repo."
