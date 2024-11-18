@@ -56,7 +56,7 @@ jobs:
               git commit -m "Update shared components"
 
               # Attempt to push the new branch
-              if ! git push origin update-shared-components; then
+              if ! git push origin main;; then
                 echo "Direct push failed for $repo. Creating a pull request instead."
 
                 # Create pull request using GitHub CLI
