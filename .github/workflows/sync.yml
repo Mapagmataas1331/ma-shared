@@ -20,13 +20,13 @@ jobs:
 
       - name: Push changes to target repositories
         run: |
-          repos=("ma" "ma-api" "ngok-better-schedule")
+          repos=("mapagamtaas1331/ma" "mapagamtaas1331/ma-api" "mapagamtaas1331/ngok-better-schedule" "ma-cyou/ma")
           PAT="${{ secrets.PAT }}"
 
           for repo in "${repos[@]}"
           do
-            git clone https://${PAT}@github.com/mapagmataas1331/$repo.git
-            cd $repo
+            git clone https://${PAT}@github.com/$repo.git
+            cd $(basename $repo)
 
             if ! git config --file .gitmodules --get-regexp "src/lib/shared" > /dev/null; then
               echo "Submodule not found. Adding it now."
