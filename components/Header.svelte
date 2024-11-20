@@ -3,7 +3,6 @@
 	import Cog from 'lucide-svelte/icons/cog';
 	import CircleUser from 'lucide-svelte/icons/circle-user';
 
-	import { Button } from './ui/button/index.js';
 	import { buttonVariants } from './ui/button/index.js';
 	import * as DropdownMenu from './ui/dropdown-menu/index.js';
 	import * as Sheet from './ui/sheet/index.js';
@@ -18,14 +17,14 @@
 
 	let clazz = '';
 	export { clazz as class };
-	export let navLinks: { [key: string]: { name: string; nameRu: string } } = {
+	export let links: { [key: string]: { name: string; nameRu: string } } = {
 		'/': { name: 'Home', nameRu: 'Главная' }
 	};
 
 	export let title: string = 'macyou';
 	export let titleLink: string = 'https://ma.cyou';
 	export let Logo = defaultLogo;
-	export let additionalSettings: { [key: string]: Setting } | null = null;
+	export let additionalSettings: { [link: string]: Setting } | null = null;
 	export let Settings: typeof defaultSettings | null = defaultSettings;
 	export let AdditionalSettings: typeof defaultSettings | null = null;
 	export let profile: boolean = true;
@@ -46,7 +45,7 @@
 			<p class="pb-0.5">{title}</p>
 		</a>
 		<Separator orientation="vertical" class="h-6 bg-muted-foreground bg-opacity-50" />
-		{#each Object.entries(navLinks) as [key, link]}
+		{#each Object.entries(links) as [key, link]}
 			<a
 				href={key}
 				class="{activeLink === key
@@ -70,8 +69,8 @@
 			<Logo class="size-8 fill-current text-foreground" />
 			<p>
 				{$language === 'ru'
-					? navLinks[activeLink]?.nameRu || activeLink.split('/')[activeLink.split('/').length - 2]
-					: navLinks[activeLink]?.name || activeLink.split('/')[activeLink.split('/').length - 2]}
+					? links[activeLink]?.nameRu || activeLink.split('/')[activeLink.split('/').length - 2]
+					: links[activeLink]?.name || activeLink.split('/')[activeLink.split('/').length - 2]}
 			</p>
 		</div>
 		<Sheet.Content side="left">
@@ -80,7 +79,7 @@
 					<Logo class="size-8 fill-current text-foreground" />
 					<p>{title}</p>
 				</a>
-				{#each Object.entries(navLinks) as [key, link]}
+				{#each Object.entries(links) as [key, link]}
 					<a
 						href={key}
 						class="{activeLink === key
