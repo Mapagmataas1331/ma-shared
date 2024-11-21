@@ -12,14 +12,23 @@
 <footer
 	class="{clazz !== ''
 		? clazz + ' '
-		: ''}flex flex-wrap justify-center gap-2 px-2 py-4 text-xs text-muted-foreground"
+		: ''}flex flex-col items-center justify-between gap-1 p-2 pb-3 text-xs text-muted-foreground md:flex-row md:gap-3 md:px-4 md:py-3"
 >
-	{#each Object.entries(links) as [link, { name, nameRu }], i}
-		<a href={link} class="hover:text-foreground">
-			{$language === 'ru' ? nameRu : name}
-		</a>
-		{#if i < Object.entries(links).length - 1}
-			<Separator orientation="vertical" class="bg-muted-foreground bg-opacity-50" />
-		{/if}
-	{/each}
+	<div>
+		© <a class="hover:text-foreground" href="https://ma.cyou/" target="_blank">ma.cyou</a> (<a
+			class="hover:text-foreground"
+			href="https://github.com/mapagmataas1331/"
+			target="_blank">Mapagmataas</a
+		>) 2023 - {new Date().getFullYear()}
+	</div>
+	<div class="flex gap-2">
+		{#each Object.entries(links) as [link, { name, nameRu }], i}
+			<a href={link} class="hover:text-foreground">
+				{$language === 'ru' ? nameRu : name}
+			</a>
+			{#if i < Object.entries(links).length - 1}
+				<Separator orientation="vertical" class="bg-muted-foreground bg-opacity-50" />
+			{/if}
+		{/each}
+	</div>
 </footer>
