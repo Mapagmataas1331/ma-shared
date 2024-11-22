@@ -21,7 +21,7 @@
 			target="_blank">Mapagmataas</a
 		>) 2023 - {new Date().getFullYear()}
 	</div>
-	<div class="flex gap-2">
+	<div class="flex gap-1 sm:gap-2">
 		{#each Object.entries(links) as [link, { name, nameRu }], i}
 			<a href={link} class="hover:text-foreground">
 				{$language === 'ru' ? nameRu : name}
