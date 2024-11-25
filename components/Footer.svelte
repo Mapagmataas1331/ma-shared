@@ -15,10 +15,9 @@
 		: ''}flex flex-col items-center justify-between gap-1 p-2 pb-3 text-xs text-muted-foreground md:flex-row md:gap-3 md:px-4 md:py-3"
 >
 	<div>
-		© <a class="hover:text-foreground" href="https://ma.cyou/" target="_blank">ma.cyou</a> (<a
+		© <a class="hover:text-foreground" href="https://ma.cyou/">ma.cyou</a> (<a
 			class="hover:text-foreground"
-			href="https://github.com/mapagmataas1331/"
-			target="_blank">Mapagmataas</a
+			href="https://github.com/mapagmataas1331/">Mapagmataas</a
 		>) 2023 - {new Date().getFullYear()}
 	</div>
 	<div class="flex gap-1 sm:gap-2">
